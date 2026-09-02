@@ -1,0 +1,84 @@
+from hub import port, sound, light_matrix #Do hub(Spike) importar portas, som e matriz de luz.(São coisas próprias do hub, não adicionais)
+import runloop, motor_pair, distance_sensor, force_sensor, color_sensor, color #Elementos adicionais
+
+CM_PER_ROT = 17.6
+def deg_for_cm(cm):
+    return int(cm/CM_PER_ROT*360)
+def obstacle_found():
+    distance = distance_sensor.distance(port.F) #Verificar porta do sensor
+    return distance > 0
+def force_sensor_pressed():
+    return force_sensor.pressed(port.A) #Verificar porta do sensor
+def color_found():
+    return color_sensor.color(port.B) == color.RED #Verificar porta do sensor
+musica = [
+    [349, 200], #Fá
+    [349, 200], #Fá
+    [349, 400], #Fá
+    [329, 200], #Mi
+    [349, 200], #Fá
+    [392, 600], #Sol
+    [349, 200], #Fá
+    [349, 200], #Fá
+    [349, 400], #Fá
+    [329, 200], #Mi
+    [349, 200], #Fá
+    [392, 600], #Sol
+]
+
+async def main():
+    sound.volume(100)
+    motor_pair.pair(motor_pair.PAIR_1, port.A, port.B)
+    while not color_found:
+        while not force_sensor.pressed(port.A): #Verificar porta do sensor
+            if obstacle_found() > 20:
+                while True:
+                    light_matrix.show_image(light_matrix.IMAGE_HAPPY)
+                    motor_pair.move(motor_pair.PAIR_1, 0, velocity= 1000)
+                    await runloop.sleep_ms(10)
+            elif obstacle_found() < 20 and obstacle_found() > 10:
+                while True:
+                    light_matrix.show_image(light_matrix.IMAGE_SMILE)
+                    motor_pair.move(motor_pair.PAIR_1, 0, velocity= 500)
+                    await runloop.sleep_ms(10)
+            elif obstacle_found() < 10 and obstacle_found() > 5:
+                while True:
+                    light_matrix.show_image(light_matrix.IMAGE_SAD)
+                    motor_pair.move(motor_pair.PAIR_1, 0, velocity= 200)
+                    await runloop.sleep_ms(10)
+            else:
+                motor_pair.stop(motor_pair.PAIR_1)
+                await light_matrix.write("Lascou!")
+                break
+        while True:
+            if obstacle_found() > 5 and not force_sensor.pressed(port.A): #Verificar porta do sensor
+                await motor_pair.move_tank_for_degrees(motor_pair.PAIR_1, 400, +200, -200)
+            break
+        while not force_sensor.pressed(port.A): #Verificar porta do sensor
+            if obstacle_found() > 20:
+                while True:
+                    light_matrix.show_image(light_matrix.IMAGE_HAPPY)
+                    motor_pair.move(motor_pair.PAIR_1, 0, velocity= 1000)
+                    await runloop.sleep_ms(10)
+            elif obstacle_found() < 20 and obstacle_found() > 10:
+                while True:
+                    light_matrix.show_image(light_matrix.IMAGE_SMILE)
+                    motor_pair.move(motor_pair.PAIR_1, 0, velocity= 500)
+                    await runloop.sleep_ms(10)
+            elif obstacle_found() < 10 and obstacle_found() > 5:
+                while True:
+                    light_matrix.show_image(light_matrix.IMAGE_SAD)
+                    motor_pair.move(motor_pair.PAIR_1, 0, velocity= 200)
+                    await runloop.sleep_ms(10)
+            else:
+                motor_pair.stop(motor_pair.PAIR_1)
+                await light_matrix.write("Lascou!")
+                break
+        light_matrix.show_image(light_matrix.IMAGE_DIAMOND)
+        for nota in musica:
+            frequencia = nota[0]
+            duracao = nota[1]
+            await sound.beep(frequencia, duracao)
+            await runloop.sleep_ms(50)
+        motor_pair.stop(motor_pair.PAIR_1)
+runloop.run(main())
