@@ -30,53 +30,39 @@ async def main():
     motor_pair.pair(motor_pair.PAIR_1, port.A, port.B)
     while not color_found():
         while not force_sensor.pressed(port.C): #Verificar porta do sensor
-            if obstacle_found() > 200:
-                while True:
+            if obstacle_found() > 200
                     light_matrix.show_image(light_matrix.IMAGE_HAPPY)
                     motor_pair.move(motor_pair.PAIR_1, 0, velocity= 1000)
                     await runloop.sleep_ms(10)
-                    break
-            elif obstacle_found() < 200:
-                if obstacle_found() > 100:
-                    while True:
+            elif 200 > obstacle_found() > 100:
                         light_matrix.show_image(light_matrix.IMAGE_SMILE)
                         motor_pair.move(motor_pair.PAIR_1, 0, velocity= 500)
                         await runloop.sleep_ms(10)
-                        break
-            elif obstacle_found() < 100:
-                if obstacle_found() > 50:
-                    while True:
+            elif 100 > obstacle_found() > 50:
                         light_matrix.show_image(light_matrix.IMAGE_SAD)
                         motor_pair.move(motor_pair.PAIR_1, 0, velocity= 200)
                         await runloop.sleep_ms(10)
-                        break
             else:
                 motor_pair.stop(motor_pair.PAIR_1)
                 await light_matrix.write("Lascou!")
-                break
+            break
         while True:
             if obstacle_found() > 50 and not force_sensor.pressed(port.C): #Verificar porta do sensor
                 await motor_pair.move_tank_for_degrees(motor_pair.PAIR_1, 400, +200, -200)
             break
         while not force_sensor.pressed(port.C): #Verificar porta do sensor
             if obstacle_found() > 200:
-                while True:
                     light_matrix.show_image(light_matrix.IMAGE_HAPPY)
                     motor_pair.move(motor_pair.PAIR_1, 0, velocity= 1000)
                     await runloop.sleep_ms(10)
-                    break
-            elif obstacle_found() < 200 and obstacle_found() > 100:
-                while True:
+            elif 200 > obstacle_found() > 100:
                     light_matrix.show_image(light_matrix.IMAGE_SMILE)
                     motor_pair.move(motor_pair.PAIR_1, 0, velocity= 500)
                     await runloop.sleep_ms(10)
-                    break
-            elif obstacle_found() < 100 and obstacle_found() > 50:
-                while True:
+            elif 100 > obstacle_found() > 50:
                     light_matrix.show_image(light_matrix.IMAGE_SAD)
                     motor_pair.move(motor_pair.PAIR_1, 0, velocity= 200)
                     await runloop.sleep_ms(10)
-                    break
             else:
                 motor_pair.stop(motor_pair.PAIR_1)
                 await light_matrix.write("Lascou!")
