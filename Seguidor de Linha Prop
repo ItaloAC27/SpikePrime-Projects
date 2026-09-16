@@ -1,0 +1,14 @@
+from hub import port
+import motor_pair, color_sensor, runloop
+
+motor_pair.pair(motor_pair.PAIR_1, port.A, port.B)
+async def seguir_linha():
+    while True:
+        erro = 60 - color_sensor.reflection(port.C)
+        correcao = int(erro * 2.3)
+        motor_pair.move(motor_pair.PAIR_1, correcao, velocity=600)
+
+async def main():
+    await seguir_linha()
+
+runloop.run(main())
