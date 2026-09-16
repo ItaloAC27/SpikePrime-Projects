@@ -9,10 +9,10 @@ async def pid_seguidor_linha():
         erro = 60 - color_sensor.reflection(port.C)
         Pfix = erro*2.5
         integral = integral + erro
-        Ifix = integral*0.002
+        Ifix = integral*0.001
         derivada = erro - anteriorErro
         anteriorErro = erro
-        Dfix = derivada*1
+        Dfix = derivada*0.5
         correcao = min(100, max(-100, int(Pfix + Ifix+Dfix)))
         motor_pair.move(motor_pair.PAIR_1, correcao, velocity=300)
 
